@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const feedback = document.getElementById("feedback");
 
   if (!button || !feedback) {
-    console.error("Кнопка не найдена!");
+    console.error("PRIVATE ACCESS: кнопка не найдена");
     return;
   }
 
@@ -15,25 +15,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   button.addEventListener("click", () => {
-    console.log("Кнопка нажата!");
+    console.log("PRIVATE ACCESS: кнопка нажата");
 
-    if (!tg || !tg.initData) {
-      feedback.textContent = "Открой сайт через Telegram-бота.";
+    if (!tg || typeof tg.sendData !== "function") {
+      feedback.textContent =
+        "Открой приложение через кнопку в Telegram.";
       return;
     }
 
     button.disabled = true;
-    button.querySelector(".button-text").textContent = "Отправляем запрос...";
-    feedback.textContent = "Передаём запрос боту...";
+    feedback.textContent = "Отправляем запрос боту…";
 
     try {
       tg.sendData("get_access");
-      feedback.textContent = "Запрос отправлен! Проверь чат с ботом.";
     } catch (error) {
+      console.error("Ошибка отправки:", error);
       button.disabled = false;
-      button.querySelector(".button-text").textContent = "Получить доступ";
-      feedback.textContent = "Ошибка отправки запроса.";
-      console.error(error);
+      feedback.textContent = "Не удалось отправить запрос.";
     }
   });
 });
